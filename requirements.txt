@@ -1,5 +1,6 @@
 fastapi
 uvicorn
 pandas
-prophet
+prophet==1.1.5
+cmdstanpy==1.2.0
 pydantic
