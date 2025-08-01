@@ -1,3 +1,4 @@
+# force redeploy
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
@@ -36,3 +37,4 @@ async def forecast(data: List[InputRow]):
                 "yhat_upper": row["yhat_upper"]
             })
     return result
+
