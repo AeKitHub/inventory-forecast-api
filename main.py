@@ -1,9 +1,8 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from pydantic import BaseModel
-from prophet import Prophet
-import pandas as pd
 from typing import List
-import uvicorn
+import pandas as pd
+from prophet import Prophet
 
 app = FastAPI()
 
@@ -14,7 +13,7 @@ class InputRow(BaseModel):
     y: float
 
 @app.post("/forecast")
-async def forecast_endpoint(data: List[InputRow]):
+async def forecast(data: List[InputRow]):
     df = pd.DataFrame([item.dict() for item in data])
     result = []
 
@@ -24,7 +23,7 @@ async def forecast_endpoint(data: List[InputRow]):
         group["ds"] = pd.to_datetime(group["ds"])
         m.fit(group)
 
-        future = m.make_future_dataframe(periods=30)  # 30-day forecast
+        future = m.make_future_dataframe(periods=30)
         forecast = m.predict(future)
 
         for row in forecast[-30:].to_dict(orient="records"):
@@ -36,5 +35,4 @@ async def forecast_endpoint(data: List[InputRow]):
                 "yhat_lower": row["yhat_lower"],
                 "yhat_upper": row["yhat_upper"]
             })
-
     return result
